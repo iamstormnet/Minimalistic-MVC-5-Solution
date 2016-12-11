@@ -1,0 +1,32 @@
+﻿            // during app start
+            var factory = new AppConfigConnectionFactory("MinimalisticMVC5");
+
+            // during start of the current session
+            using (AdoNetContext context = new AdoNetContext(factory))
+            {
+
+                // for the transaction
+                using (var uow = context.CreateUnitOfWork())
+                {
+                    var repos1 = new EmployeeRepository(context);
+
+                    Employee emp = new Employee() { Name = "Yavuz" };
+
+                    repos1.Create(emp);
+
+                    uow.SaveChanges();
+
+                    Console.WriteLine(emp.Id.ToString());
+                }
+
+                EmployeeRepository er = new EmployeeRepository(context);
+                IEnumerable<Employee> employees = er.FindUsers("Yavuz");
+
+                foreach (Employee e in employees)
+                    Console.WriteLine(e.Name + " " + e.Id.ToString());
+
+
+
+            }
+
+            Console.ReadKey();
